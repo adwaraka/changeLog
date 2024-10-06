@@ -4,4 +4,4 @@ WORKDIR /code
 ADD fetchCommits.py .
 
 RUN pip install requests nltk
-CMD ["python3", "fetchCommits.py"]
+ENTRYPOINT ["python", "fetchCommits.py"]
