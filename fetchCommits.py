@@ -73,9 +73,35 @@ def calculateSummary(summaryText: str):
                         sentenceScores[sent] += wordFrequencies[word]
 
     summarySentences = heapq.nlargest(10, sentenceScores, key=sentenceScores.get)
+    changeClassifier(summarySentences)
 
-    summary = '\n-'.join(summarySentences)
-    print(f"Summary:\n{summary}")
+
+def changeClassifier(sentences: list):
+    classifier = {'add':       [],
+                  'change':    [],
+                  'remove':    [],
+                  'deprecate': [],
+                  'fix':       [],
+                  'security':  [],
+                  }
+    misc = []
+    isClassifed = False
+
+    for sentence in sentences:
+        for classifyTerm in classifier.keys():
+            if classifyTerm in sentence.lower():
+                classifier[classifyTerm].append(f'{sentence}\n')
+                isClassifed = True
+                break
+        if not isClassifed:
+            misc.append(f'{sentence}\n')
+        isClassifed = False
+
+    print()
+    print()
+    for key, val in classifier.items():
+        print(key, val)
+    print(misc)
 
 
 def main():
