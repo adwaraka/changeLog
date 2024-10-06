@@ -3,12 +3,13 @@ import datetime
 import heapq
 import nltk
 import re
+import os
 from string import punctuation
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
 
-headers = {'Authorization': 'token ' + GIT_ACCESS_TOKEN}
+headers = {'Authorization': 'token ' + os.environ.get('GIT_ACCESS_TOKEN')}
 login = requests.get(
 	'https://api.github.com/repos/adwaraka/neighbors/commits', 
 	headers=headers, 
