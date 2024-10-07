@@ -5,6 +5,8 @@ import heapq
 import nltk
 import re
 import os
+import time
+
 from string import punctuation
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -90,18 +92,24 @@ def changeClassifier(sentences: list):
     for sentence in sentences:
         for classifyTerm in classifier.keys():
             if classifyTerm in sentence.lower():
-                classifier[classifyTerm].append(f'{sentence}\n')
+                classifier[classifyTerm].append(f'{sentence}')
                 isClassifed = True
                 break
         if not isClassifed:
             misc.append(f'{sentence}\n')
         isClassifed = False
 
-    print()
-    print()
-    for key, val in classifier.items():
-        print(key, val)
-    print(misc)
+    ts = time.time()
+    currentTimeStamp = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d%H%M%S')
+    with open("./data/" + f'change_log_{currentTimeStamp}.txt', 'w') as fp:
+        for key, value in classifier.items():
+            fp.write(f'\n\n### {key} ###\n')
+            for comment in value:
+                fp.write(f' - {comment}\n')
+        fp.write(f'\n\n### others ###\n')
+        for comment in misc:
+            fp.write(f' - {comment}')
+        print(f"File /data/change_log_{currentTimeStamp}.txt generated.")
 
 
 def main():
