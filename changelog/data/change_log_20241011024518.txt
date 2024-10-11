@@ -1,0 +1,33 @@
+
+
+### add ###
+ - Remove the padding logic and use isValid.
+ - Add unique paths problem in neighbors.
+ - Merge pull request #1 from adwaraka/feature/remove_padding
+
+Feature/remove padding.
+ - Added hungryRabbit problem; very old implementation.
+ - Adding coding solutions for relevant problems.
+ - Add comment statements.
+
+
+### change ###
+ - Some formatting code changes.
+
+
+### remove ###
+
+
+### deprecate ###
+
+
+### fix ###
+
+
+### security ###
+
+
+### others ###
+ - Bug in row validation.
+ - Gap in function name.
+ - Corrected isValid() for nXm matrix.

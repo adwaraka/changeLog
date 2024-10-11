@@ -1,9 +1,11 @@
 Adding basic code for fetching Git commits.
 
-`
+```
 docker build -t changelog .
-docker run --rm --volume ./data:/code/data -e GIT_ACCESS_TOKEN=<your token goes here> changelog --user=<git user> --repo=<repository name>
-`
+
+docker run --rm --volume ./data:/code/data -e GIT_ACCESS_TOKEN=<your git access token> changelog --user=<user> --repo=<your repo goes here>
+```
+
 
 
 Example of a generated change log file using this tool will look like the following. Eg. 

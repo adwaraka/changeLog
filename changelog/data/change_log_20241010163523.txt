@@ -1,0 +1,27 @@
+
+
+### add ###
+ - Add minimum depth logic.
+ - Add determination of a diameter of a BT.
+ - Add maxDepth function as well.
+ - Add printRightSide() implementation.
+
+
+### change ###
+
+
+### remove ###
+
+
+### deprecate ###
+
+
+### fix ###
+
+
+### security ###
+
+
+### others ###
+ - Better comments for minDepth.
+ - First commit for the Binary Tree.
