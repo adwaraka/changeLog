@@ -14,30 +14,36 @@ from nltk.tokenize import sent_tokenize
 
 
 def extractCommits(user: str, repo: str):
-    headers = {'Authorization': 'token ' + os.environ.get('GIT_ACCESS_TOKEN')}
-    gitURL = f'https://api.github.com/repos/{user}/{repo}/commits'
-    response = requests.get(gitURL, headers=headers, verify=False)
-    # ?since=2024-01-01T00:00:00Z append to url for commits
-    # abs(
-    #     (datetime.now() - datetime.strptime(date.split("T")[0], "%Y-%m-%d")
-    #         ).days) gives difference in days
+    try:
+        headers = {'Authorization': 'token ' + os.environ.get('GIT_ACCESS_TOKEN')}
+        gitURL = f'https://api.github.com/repos/{user}/{repo}/commits'
+        response = requests.get(gitURL, headers=headers, verify=False)
+        # ?since=2024-01-01T00:00:00Z append to url for commits
+        # abs(
+        #     (datetime.now() - datetime.strptime(date.split("T")[0], "%Y-%m-%d")
+        #         ).days) gives difference in days
 
-    summaryText = ""
-    # print()
-    # print(f"CHANGE LOG DATE:{datetime.datetime.now().isoformat()}")
-    # print()
-    for val in response.json():
-        # print(f"Commit Date:{val['commit']['author']['date']}")
-        # print("\t", val['commit']['message'])
-        summaryText+=val['commit']['message']
-        summaryText+=". "
+        summaryText = ""
         # print()
+        # print(f"CHANGE LOG DATE:{datetime.datetime.now().isoformat()}")
+        # print()
+        for val in response.json():
+            # print(f"Commit Date:{val['commit']['author']['date']}")
+            # print("\t", val['commit']['message'])
+            summaryText+=val['commit']['message']
+            summaryText+=". "
+            # print()
+    except Exception as err:
+        raise Exception("Cannot fetch commits from the username/repo. {}".format(err))
 
-    # print(f"All Commits:\n {summaryText}")
-    calculateSummary(summaryText)
+    try:
+        # print(f"All Commits:\n {summaryText}")
+        calculateSummary(summaryText, user, repo)
+    except Exception as err:
+        raise Exception("Something went wrong with summarizing. {}".format(err))
 
 
-def calculateSummary(summaryText: str):
+def calculateSummary(summaryText: str, user: str, repo: str):
     nltk.download('punkt_tab')
     nltk.download('stopwords')
     sentences = nltk.sent_tokenize(summaryText)
@@ -75,10 +81,10 @@ def calculateSummary(summaryText: str):
                         sentenceScores[sent] += wordFrequencies[word]
 
     summarySentences = heapq.nlargest(10, sentenceScores, key=sentenceScores.get)
-    changeClassifier(summarySentences)
+    changeClassifier(summarySentences, user, repo)
 
 
-def changeClassifier(sentences: list):
+def changeClassifier(sentences: list, user: str, repo: str):
     classifier = {'add':       [],
                   'change':    [],
                   'remove':    [],
@@ -101,16 +107,24 @@ def changeClassifier(sentences: list):
 
     ts = time.time()
     currentTimeStamp = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d%H%M%S')
-    with open("./data/" + f'change_log_{currentTimeStamp}.txt', 'w') as fp:
-        for key, value in classifier.items():
-            fp.write(f'\n\n### {key} ###\n')
-            for comment in value:
-                fp.write(f' - {comment}\n')
-        fp.write(f'\n\n### others ###\n')
-        for comment in misc:
-            fp.write(f' - {comment}')
-        print(f"File /data/change_log_{currentTimeStamp}.txt generated.")
 
+    try:
+        #create directory and then the file in it
+        directory = f'./data/{user}/{repo}/'
+        filePath = f'{directory}' + f'change_log_{currentTimeStamp}.txt'
+        os.makedirs(directory, exist_ok=True)
+
+        with open(filePath, 'w') as fp:
+            for key, value in classifier.items():
+                fp.write(f'\n\n### {key} ###\n')
+                for comment in value:
+                    fp.write(f' - {comment}\n')
+            fp.write(f'\n\n### others ###\n')
+            for comment in misc:
+                fp.write(f' - {comment}')
+            print(f"File /data/change_log_{currentTimeStamp}.txt generated.")
+    except IOError as e:
+        print(f"An I/O error occurred: {e}")
 
 def main():
     parser = argparse.ArgumentParser()

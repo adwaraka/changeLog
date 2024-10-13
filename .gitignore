@@ -1,1 +1,2 @@
-/changelog/data/*.txt
+/changelog/data/*
+!/changelog/data/readme
