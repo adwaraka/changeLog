@@ -5,6 +5,8 @@ cd changelog-server/
 
 docker build -t changelog_server .
 
+cd ../changelog
+
 docker run --rm -p 5000:5000 --mount type=bind,source=./data,target=/app/data,bind-recursive=enabled changelog_server
 
 ```
