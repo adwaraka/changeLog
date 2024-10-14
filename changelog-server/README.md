@@ -5,9 +5,13 @@ cd changelog-server/
 
 docker build -t changelog_server .
 
-docker run --rm -p 8000:8000 --volume ./{where the changelog dumps their data}:/code/logs changelog_server
+docker run --rm -p 5000:5000 --mount type=bind,source=./data,target=/app/data,bind-recursive=enabled changelog_server
 
-// arvindd25@penguin:~/workspace/codeSamples/changeLog/changelog-server$ cd ../changelog
-// arvindd25@penguin:~/workspace/codeSamples/changeLog/changelog$ docker run --rm -p 8000:8000 --volume ./data:/code/logs changelog_server
+```
 
+
+To use the API
+
+```
+curl -s "http://localhost:5000/parameters?user=adwaraka&repo=binarytrees"
 ```
