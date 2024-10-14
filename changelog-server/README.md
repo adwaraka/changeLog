@@ -1,4 +1,4 @@
-Build a barebones log dump site; not final display tool. Visible using http://localhost:8000
+Using Flask for the server for the changelogs
 
 ```
 cd changelog-server/
