@@ -13,26 +13,23 @@ from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
 
 
-def extractCommits(user: str, repo: str):
+def extractCommits(user: str, repo: str, limit: int):
+    # calculate the date till which we need to fetch commits
+    current = datetime.date.today()
+    newdate = current + datetime.timedelta(days=-1*limit)
+    limitDate = newdate.isoformat() + "T00:00:00Z"
+
     try:
         headers = {'Authorization': 'token ' + os.environ.get('GIT_ACCESS_TOKEN')}
-        gitURL = f'https://api.github.com/repos/{user}/{repo}/commits'
+        gitURL = f'https://api.github.com/repos/{user}/{repo}/commits?since={limitDate}'
+        print(gitURL)
         response = requests.get(gitURL, headers=headers, verify=False)
-        # ?since=2024-01-01T00:00:00Z append to url for commits
-        # abs(
-        #     (datetime.now() - datetime.strptime(date.split("T")[0], "%Y-%m-%d")
-        #         ).days) gives difference in days
 
         summaryText = ""
-        # print()
-        # print(f"CHANGE LOG DATE:{datetime.datetime.now().isoformat()}")
-        # print()
         for val in response.json():
-            # print(f"Commit Date:{val['commit']['author']['date']}")
-            # print("\t", val['commit']['message'])
             summaryText+=val['commit']['message']
             summaryText+=". "
-            # print()
+
     except Exception as err:
         raise Exception("Cannot fetch commits from the username/repo. {}".format(err))
 
@@ -130,8 +127,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--user", help="user")
     parser.add_argument("--repo", help="repo")
+    parser.add_argument("--days", help="days", type=int)
     args = parser.parse_args()
-    extractCommits(args.user, args.repo)
+    extractCommits(args.user, args.repo, args.days)
 
 
 if __name__ == "__main__":

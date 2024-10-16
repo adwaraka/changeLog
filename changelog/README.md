@@ -5,7 +5,7 @@ cd changelog
 
 docker build -t changelog .
 
-docker run --rm --volume ./data:/code/data -e GIT_ACCESS_TOKEN=<your git access token> changelog --user=<user> --repo=<your repo goes here>
+docker run --rm --volume ./data:/code/data -e GIT_ACCESS_TOKEN=<your git access token> changelog --user=<user> --repo=<your repo goes here> --days=<n>
 
 ```
 
